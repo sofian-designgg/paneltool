@@ -3,6 +3,23 @@
 @tailwind utilities;
 
 :root {
-  --accent: #f472b6;
-  --accent-dark: #db2777;
+  --pink: #ec4899;
+  --pink-dim: #db2777;
+}
+
+@keyframes btn-glow {
+  0%, 100% { box-shadow: 0 0 12px rgba(236, 72, 153, 0.4); }
+  50% { box-shadow: 0 0 24px rgba(236, 72, 153, 0.7); }
+}
+
+@keyframes btn-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.9; transform: scale(1.02); }
+}
+
+.btn-animated {
+  animation: btn-glow 2s ease-in-out infinite;
+}
+.btn-animated:hover {
+  animation: btn-glow 0.8s ease-in-out infinite, btn-pulse 0.5s ease;
 }

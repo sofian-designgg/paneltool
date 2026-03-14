@@ -17,7 +17,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="fr" className={`${outfit.variable} ${dmSans.variable}`}>
-      <body className="font-body antialiased bg-slate-950 text-slate-100 min-h-screen">
+      <body className="font-body antialiased bg-black text-white min-h-screen">
         {children}
       </body>
     </html>
