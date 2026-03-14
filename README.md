@@ -35,17 +35,15 @@ vercel
 
 ## Variables d'environnement (Vercel)
 
-Pour la création de tickets depuis le site :
+**Tickets :** `DISCORD_BOT_TOKEN`, `DISCORD_GUILD_ID`, `DISCORD_TICKET_CATEGORY_ID`, `DISCORD_SUPPORT_ROLE_IDS`
 
-1. Vercel → Settings → Environment Variables
-2. Ajouter :
-   - `DISCORD_BOT_TOKEN` — Token de ton bot (comme dans Sayuri Shop bot)
-   - `DISCORD_GUILD_ID` — ID du serveur Discord
-   - `DISCORD_TICKET_CATEGORY_ID` — ID de la catégorie tickets (celle de `+ticketsetup`)
-   - `DISCORD_SUPPORT_ROLE_IDS` — (optionnel) IDs des rôles support, séparés par des virgules
+**OAuth (client visible dans son ticket) :** Créer une app sur discord.com/developers/applications → OAuth2 → Redirect : `https://ton-site.vercel.app/api/auth/callback`  
+Variables : `DISCORD_CLIENT_ID`, `DISCORD_CLIENT_SECRET`, `NEXT_PUBLIC_APP_URL`
 
-Pour obtenir les IDs : Discord → Paramètres → Avancés → Mode développeur (activé), puis clic droit sur serveur/catégorie/rôle → Copier l’identifiant.
+Pour les IDs : Mode développeur Discord activé → clic droit → Copieridentifiant
 
+
+ l’
 ## Images des produits
 
 Place les images dans `public/images/` :
