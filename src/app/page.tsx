@@ -23,6 +23,46 @@ function isVariantProduct(p: Product): p is VariantProduct {
   return 'variants' in p && Array.isArray((p as VariantProduct).variants)
 }
 
+function BuyButton({
+  productName,
+  variant,
+  price
+}: {
+  productName: string
+  variant?: string
+  price: string
+}) {
+  const [loading, setLoading] = useState(false)
+
+  const handleBuy = async () => {
+    setLoading(true)
+    try {
+      const res = await fetch('/api/create-ticket', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ product: productName, variant: variant || undefined, price })
+      })
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok) throw new Error(data.error || 'Failed')
+      window.open(DISCORD_LINK, '_blank')
+    } catch {
+      window.open(DISCORD_LINK, '_blank')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <button
+      onClick={handleBuy}
+      disabled={loading}
+      className="px-4 py-2 rounded bg-pink-500 text-white text-sm font-medium hover:bg-pink-600 transition btn-animated shrink-0 disabled:opacity-70"
+    >
+      {loading ? '...' : 'Buy'}
+    </button>
+  )
+}
+
 export default function Home() {
   const [key, setKey] = useState('')
   const [granted, setGranted] = useState(false)
@@ -155,14 +195,11 @@ function Shop() {
                   )}
                   <div className="flex items-center justify-between gap-3">
                     <span className="text-pink-500 font-semibold">{getProductPrice(product)}</span>
-                    <a
-                      href={DISCORD_LINK}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="px-4 py-2 rounded bg-pink-500 text-white text-sm font-medium hover:bg-pink-600 transition btn-animated shrink-0"
-                    >
-                      Buy
-                    </a>
+                    <BuyButton
+                      productName={product.name}
+                      variant={isVariantProduct(product) ? product.variants[selectedVariants[product.id] ?? 0]?.label : undefined}
+                      price={getProductPrice(product)}
+                    />
                   </div>
                 </div>
               </article>
