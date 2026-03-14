@@ -5,21 +5,31 @@
 :root {
   --pink: #ec4899;
   --pink-dim: #db2777;
+  --accent: #a855f7;
 }
 
 @keyframes btn-glow {
   0%, 100% { box-shadow: 0 0 12px rgba(236, 72, 153, 0.4); }
-  50% { box-shadow: 0 0 24px rgba(236, 72, 153, 0.7); }
+  50% { box-shadow: 0 0 24px rgba(236, 72, 153, 0.6); }
 }
 
 @keyframes btn-pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.9; transform: scale(1.02); }
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
 }
 
 .btn-animated {
   animation: btn-glow 2s ease-in-out infinite;
 }
 .btn-animated:hover {
-  animation: btn-glow 0.8s ease-in-out infinite, btn-pulse 0.5s ease;
+  animation: btn-glow 0.8s ease-in-out infinite, btn-pulse 0.3s ease;
+}
+
+.glass {
+  @apply bg-white/5 backdrop-blur-xl border border-white/10;
 }
