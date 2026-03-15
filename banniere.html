@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Assembleur de bannières - Sayuri</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      min-height: 100vh;
+      padding: 24px;
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #0a0a0a;
+      color: #fff;
+    }
+    .wrap { max-width: 640px; margin: 0 auto; }
+    h1 { color: #ec4899; margin-bottom: 24px; font-size: 1.5rem; }
+    .preview-wrap {
+      background: #111;
+      border: 2px solid #ec4899;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 20px;
+      overflow: auto;
+    }
+    .preview-wrap canvas { max-width: 100%; height: auto; display: block; margin: 0 auto; }
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; color: #a1a1aa; font-size: 0.85rem; margin-bottom: 6px; }
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid #3f3f46;
+      background: #18181b;
+      color: #fff;
+      font-size: 1rem;
+    }
+    .form-row { display: flex; gap: 12px; }
+    .form-row .form-group { flex: 1; }
+    .hint { font-size: 0.75rem; color: #71717a; margin-top: 4px; }
+    .btns { display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap; }
+    .btns button {
+      padding: 12px 24px;
+      border-radius: 10px;
+      border: none;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-pink { background: #ec4899; color: white; }
+    .btn-pink:hover { background: #db2777; }
+    .btn-outline { background: transparent; color: #ec4899; border: 2px solid #ec4899; }
+    .btn-outline:hover { background: rgba(236,72,153,0.2); }
+    .presets { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+    .presets button {
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: 1px solid #3f3f46;
+      background: #27272a;
+      color: #a1a1aa;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+    .presets button:hover { border-color: #ec4899; color: #fff; }
+    input[type="file"] { padding: 8px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>🖼 Assembleur de bannières</h1>
+    <p style="color:#71717a;margin-bottom:20px">Tu envoies le fond + l'image principale, tout s'assemble ici.</p>
+
+    <div class="preview-wrap">
+      <canvas id="canvas" width="1200" height="300"></canvas>
+    </div>
+
+    <div class="form-group">
+      <label>🖼 Image de fond</label>
+      <input type="text" id="bgUrl" placeholder="URL du fond (ou choisis un fichier ci-dessous)">
+      <input type="file" id="bgFile" accept="image/*" style="margin-top:8px">
+      <p class="hint">Sans image : fond noir ou dégradé selon le style</p>
+    </div>
+
+    <div class="form-group">
+      <label>⭐ Image principale (logo / perso)</label>
+      <input type="text" id="mainUrl" placeholder="URL de l'image principale">
+      <input type="file" id="mainFile" accept="image/*" style="margin-top:8px">
+      <p class="hint">Centrée sur la bannière</p>
+    </div>
+
+    <div class="form-group">
+      <label>Taille de l'image principale</label>
+      <select id="mainSize">
+        <option value="0.4">Petite (40%)</option>
+        <option value="0.5">Moyenne (50%)</option>
+        <option value="0.65" selected>Grande (65%)</option>
+        <option value="0.85">Très grande (85%)</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Texte par-dessus (optionnel)</label>
+      <input type="text" id="text" value="" placeholder="Ex: SAYURI">
+    </div>
+    <div class="form-group">
+      <label>Sous-titre (optionnel)</label>
+      <input type="text" id="subtext" value="" placeholder="Ex: .gg/sayuri">
+    </div>
+
+    <div class="form-group">
+      <label>Style de fond (si pas d'image de fond)</label>
+      <select id="bgStyle">
+        <option value="gradient">Dégradé rose</option>
+        <option value="dark">Noir</option>
+        <option value="darkPink">Noir + lueur rose</option>
+      </select>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Largeur</label>
+        <input type="number" id="w" value="1200" min="200" max="4000" step="100">
+      </div>
+      <div class="form-group">
+        <label>Hauteur</label>
+        <input type="number" id="h" value="300" min="100" max="2000" step="50">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Format rapide</label>
+      <div class="presets">
+        <button type="button" onclick="setSize(1200,300)">Discord (1200×300)</button>
+        <button type="button" onclick="setSize(1920,1080)">Full HD (1920×1080)</button>
+        <button type="button" onclick="setSize(1500,500)">Large (1500×500)</button>
+      </div>
+    </div>
+
+    <div class="btns">
+      <button class="btn-pink" onclick="downloadBanner()">⬇ Télécharger la bannière</button>
+      <button class="btn-outline" onclick="drawBanner()">🔄 Actualiser</button>
+    </div>
+  </div>
+
+  <script>
+    function setSize(w, h) {
+      document.getElementById('w').value = w;
+      document.getElementById('h').value = h;
+      drawBanner();
+    }
+
+    function loadImage(src) {
+      return new Promise((resolve) => {
+        if (!src) { resolve(null); return; }
+        const img = new Image();
+        if (src.startsWith('http')) img.crossOrigin = 'anonymous';
+        img.onload = () => resolve(img);
+        img.onerror = () => resolve(null);
+        img.src = src;
+      });
+    }
+
+    async function drawBanner() {
+      const w = parseInt(document.getElementById('w').value) || 1200;
+      const h = parseInt(document.getElementById('h').value) || 300;
+      const text = document.getElementById('text').value || '';
+      const subtext = document.getElementById('subtext').value || '';
+      const bgStyle = document.getElementById('bgStyle').value;
+      const mainSizeRatio = parseFloat(document.getElementById('mainSize').value) || 0.65;
+
+      const bgUrl = document.getElementById('bgUrl').value.trim();
+      const mainUrl = document.getElementById('mainUrl').value.trim();
+
+      const c = document.getElementById('canvas');
+      c.width = w;
+      c.height = h;
+      const ctx = c.getContext('2d');
+
+      let bgImg = null;
+      if (bgUrl) bgImg = await loadImage(bgUrl);
+
+      if (bgImg && bgImg.width) {
+        ctx.drawImage(bgImg, 0, 0, bgImg.width, bgImg.height, 0, 0, w, h);
+      } else {
+        if (bgStyle === 'gradient') {
+          const g = ctx.createLinearGradient(0, 0, w, h);
+          g.addColorStop(0, '#831843');
+          g.addColorStop(0.5, '#ec4899');
+          g.addColorStop(1, '#9d174d');
+          ctx.fillStyle = g;
+          ctx.fillRect(0, 0, w, h);
+        } else if (bgStyle === 'darkPink') {
+          ctx.fillStyle = '#0a0a0a';
+          ctx.fillRect(0, 0, w, h);
+          const g = ctx.createRadialGradient(w/2, h/2, 0, w/2, h/2, w);
+          g.addColorStop(0, 'rgba(236,72,153,0.3)');
+          g.addColorStop(1, 'transparent');
+          ctx.fillStyle = g;
+          ctx.fillRect(0, 0, w, h);
+        } else {
+          ctx.fillStyle = '#0a0a0a';
+          ctx.fillRect(0, 0, w, h);
+        }
+      }
+
+      let mainImg = null;
+      if (mainUrl) mainImg = await loadImage(mainUrl);
+
+      if (mainImg && mainImg.width) {
+        const size = Math.min(w, h) * mainSizeRatio;
+        const x = (w - size) / 2;
+        const y = (h - size) / 2;
+        ctx.drawImage(mainImg, 0, 0, mainImg.width, mainImg.height, x, y, size, size);
+      }
+
+      if (text || subtext) {
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        const fontSize = Math.min(w / 10, h / 4);
+        if (text) {
+          ctx.font = 'bold ' + fontSize + 'px system-ui, sans-serif';
+          ctx.fillStyle = '#fff';
+          ctx.shadowColor = 'rgba(0,0,0,0.8)';
+          ctx.shadowBlur = 8;
+          ctx.fillText(text, w/2, subtext ? h/2 - fontSize/4 : h/2);
+          ctx.shadowBlur = 0;
+        }
+        if (subtext) {
+          ctx.font = (fontSize * 0.4) + 'px system-ui, sans-serif';
+          ctx.fillStyle = 'rgba(255,255,255,0.95)';
+          ctx.shadowColor = 'rgba(0,0,0,0.8)';
+          ctx.shadowBlur = 6;
+          ctx.fillText(subtext, w/2, (text ? h/2 + fontSize/3 : h/2));
+          ctx.shadowBlur = 0;
+        }
+      }
+
+      ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(0, 0, w, h);
+    }
+
+    function downloadBanner() {
+      drawBanner().then(() => {
+        const a = document.createElement('a');
+        a.href = document.getElementById('canvas').toDataURL('image/png');
+        a.download = 'banniere-' + Date.now() + '.png';
+        a.click();
+      });
+    }
+
+    document.getElementById('bgFile').addEventListener('change', function(e) {
+      const f = e.target.files[0];
+      if (!f) return;
+      const url = URL.createObjectURL(f);
+      document.getElementById('bgUrl').value = url;
+      document.getElementById('bgUrl').dataset.local = '1';
+      drawBanner();
+    });
+    document.getElementById('mainFile').addEventListener('change', function(e) {
+      const f = e.target.files[0];
+      if (!f) return;
+      const url = URL.createObjectURL(f);
+      document.getElementById('mainUrl').value = url;
+      document.getElementById('mainUrl').dataset.local = '1';
+      drawBanner();
+    });
+
+    ['text', 'subtext', 'w', 'h', 'bgStyle', 'bgUrl', 'mainUrl', 'mainSize'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.addEventListener('input', drawBanner);
+        el.addEventListener('change', drawBanner);
+      }
+    });
+
+    drawBanner();
+  </script>
+</body>
+</html>

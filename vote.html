@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VOTE TO FAME</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #000;
+      color: #fff;
+    }
+    .panel {
+      max-width: 580px;
+      width: 100%;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: #0a0a0a;
+      border: 3px solid #ec4899;
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: 0 4px 20px rgba(236,72,153,0.15);
+    }
+    .title-wrap {
+      text-align: center;
+      margin-bottom: 24px;
+      position: relative;
+    }
+    .title-wrap h1 {
+      font-size: 1.9rem;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+    }
+    .vote-to { color: #fff; }
+    .fame { color: #ec4899; }
+    .sparkle {
+      position: absolute;
+      color: #ec4899;
+      font-size: 0.9rem;
+    }
+    .sparkle.s1 { top: -2px; left: 12%; }
+    .sparkle.s2 { top: 2px; right: 15%; }
+    .sparkle.s3 { top: 6px; left: 42%; }
+    .sparkle.s4 { top: 0; right: 10%; }
+    .sparkle.s5 { top: -4px; left: 22%; }
+    .sparkle.s6 { top: 4px; right: 32%; }
+    .slots {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      width: 100%;
+      max-width: 520px;
+      overflow: visible;
+    }
+    .slot-wrap {
+      flex: 1 1 200px;
+      min-width: 140px;
+      max-width: 240px;
+      position: relative;
+    }
+    .slot {
+      aspect-ratio: 1;
+      width: 100%;
+      background: #000;
+      border: 4px solid #ec4899;
+      border-radius: 16px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .slot img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center center;
+    }
+    .num-badge {
+      position: absolute;
+      top: -10px;
+      left: -10px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #ec4899;
+      color: #000;
+      font-weight: 900;
+      font-size: 1.15rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    }
+    .center-icon {
+      flex-shrink: 0;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ec4899;
+      position: relative;
+      align-self: center;
+    }
+    .center-icon .envelope { width: 40px; height: 40px; }
+    .center-icon .heart {
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      margin-top: 2px;
+    }
+    .footer {
+      text-align: center;
+      color: #6b7280;
+      font-size: 0.85rem;
+      margin-top: 12px;
+      width: 100%;
+    }
+    .inputs {
+      margin-top: 16px;
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .inputs input {
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid #ec4899;
+      background: #1a1a1a;
+      color: #fff;
+      font-size: 0.8rem;
+      width: 160px;
+    }
+    .inputs input::placeholder { color: #6b7280; }
+    .inputs select {
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid #ec4899;
+      background: #1a1a1a;
+      color: #fff;
+      font-size: 0.8rem;
+      width: 120px;
+    }
+    .btn-dl {
+      margin-top: 20px;
+      padding: 10px 20px;
+      border-radius: 10px;
+      border: none;
+      background: #ec4899;
+      color: white;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .btn-dl:hover { background: #db2777; }
+    .btns { display: flex; gap: 12px; justify-content: center; margin-top: 20px; flex-wrap: wrap; }
+    .btn-preview {
+      padding: 10px 20px;
+      border-radius: 10px;
+      border: 2px solid #ec4899;
+      background: transparent;
+      color: #ec4899;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-preview:hover { background: rgba(236,72,153,0.2); }
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.9);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal.show { display: flex; }
+    .modal img { max-width: 100%; max-height: 90vh; border-radius: 12px; border: 2px solid #ec4899; }
+    .modal-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 2px solid #ec4899;
+      background: transparent;
+      color: #ec4899;
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+    .modal-close:hover { background: rgba(236,72,153,0.2); }
+    .btn-crop {
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid #ec4899;
+      background: transparent;
+      color: #ec4899;
+      font-size: 0.75rem;
+      cursor: pointer;
+      margin-top: 4px;
+    }
+    .btn-crop:hover { background: rgba(236,72,153,0.2); }
+    .btn-crop:disabled { opacity: 0.5; cursor: not-allowed; }
+    .crop-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.95);
+      z-index: 101;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .crop-modal.show { display: flex; }
+    .crop-area {
+      position: relative;
+      display: inline-block;
+      background: #111;
+    }
+    .crop-area img {
+      display: block;
+      max-width: 90vw;
+      max-height: 65vh;
+    }
+    .crop-box {
+      position: absolute;
+      top: 0;
+      left: 0;
+      border: 3px solid #ec4899;
+      box-sizing: border-box;
+      cursor: move;
+      box-shadow: 0 0 0 9999px rgba(0,0,0,0.5);
+    }
+    .crop-grid {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+    }
+    .crop-grid::before, .crop-grid::after {
+      content: '';
+      position: absolute;
+      background: rgba(236,72,153,0.5);
+    }
+    .crop-grid::before {
+      width: 1px;
+      height: 100%;
+      left: 33.33%;
+    }
+    .crop-grid::after {
+      width: 1px;
+      height: 100%;
+      left: 66.66%;
+    }
+    .crop-grid .v2, .crop-grid .v3 {
+      position: absolute;
+      width: 100%;
+      height: 1px;
+      background: rgba(236,72,153,0.5);
+    }
+    .crop-grid .v2 { top: 33.33%; }
+    .crop-grid .v3 { top: 66.66%; }
+    .crop-btns { margin-top: 16px; display: flex; gap: 12px; }
+    .crop-btns button {
+      padding: 10px 20px;
+      border-radius: 8px;
+      border: none;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .crop-ok { background: #ec4899; color: white; }
+    .crop-cancel { background: #333; color: white; }
+  </style>
+</head>
+<body>
+  <div id="exportArea" style="width:100%;display:flex;flex-direction:column;align-items:center">
+    <div class="panel">
+      <div class="title-wrap">
+        <span class="sparkle s1">✦</span>
+        <span class="sparkle s2">✦</span>
+        <span class="sparkle s3">✦</span>
+        <span class="sparkle s4">✦</span>
+        <span class="sparkle s5">✦</span>
+        <span class="sparkle s6">✦</span>
+        <h1><span class="vote-to">VOTE TO </span><span class="fame">FAME</span></h1>
+      </div>
+
+      <div class="slots">
+        <div class="slot-wrap">
+          <span class="num-badge">1</span>
+          <div class="slot">
+            <img id="img1" src="" alt="" style="display:none" onerror="this.style.display='none'">
+          </div>
+        </div>
+
+        <div class="center-icon">
+          <svg class="envelope" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="4" y="8" width="40" height="32" rx="2"/>
+            <path d="M4 14l20 14 20-14"/>
+            <path d="M12 20l8 6 16-10" fill="currentColor" fill-opacity="0.4"/>
+          </svg>
+          <svg class="heart" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+          </svg>
+        </div>
+
+        <div class="slot-wrap">
+          <span class="num-badge">2</span>
+          <div class="slot">
+            <img id="img2" src="" alt="" style="display:none" onerror="this.style.display='none'">
+          </div>
+        </div>
+      </div>
+
+      <div class="footer">.gg/sayuri</div>
+    </div>
+  </div>
+
+  <div class="inputs">
+    <div style="display:flex;flex-direction:column;gap:6px;align-items:center">
+      <input type="text" id="url1" placeholder="Image profil 1 (URL)">
+      <button class="btn-crop" id="crop1" onclick="openCrop(1)" disabled>✂ Recadrer manuellement</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:6px;align-items:center">
+      <input type="text" id="url2" placeholder="Image profil 2 (URL)">
+      <button class="btn-crop" id="crop2" onclick="openCrop(2)" disabled>✂ Recadrer manuellement</button>
+    </div>
+  </div>
+
+  <div class="crop-modal" id="cropModal">
+    <p style="margin-bottom:12px;color:#ec4899">Glisse le quadrillage pour recadrer • Profil <span id="cropProfilNum">1</span></p>
+    <div class="crop-area" id="cropArea">
+      <img id="cropImg" src="" alt="">
+      <div class="crop-box" id="cropBox">
+        <div class="crop-grid"><span class="v2"></span><span class="v3"></span></div>
+      </div>
+    </div>
+    <div class="crop-btns">
+      <button class="crop-ok" onclick="applyCrop()">Valider</button>
+      <button class="crop-cancel" onclick="closeCrop()">Annuler</button>
+    </div>
+  </div>
+
+  <div class="btns">
+    <button class="btn-preview" onclick="previewImage()">👁 Regarder l'image</button>
+    <button class="btn-dl" onclick="downloadImage()">⬇ Télécharger</button>
+  </div>
+
+  <div class="modal" id="modal" onclick="if(event.target===this)closeModal()">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <img id="previewImg" src="" alt="Aperçu">
+  </div>
+
+  <script>
+    let cropData = { 1: { x: 0.5, y: 0.5 }, 2: { x: 0.5, y: 0.5 } };
+    let currentCropProfile = 1;
+
+    document.getElementById('url1').addEventListener('input', e => {
+      const img = document.getElementById('img1');
+      img.src = e.target.value || '';
+      img.style.display = e.target.value ? 'block' : 'none';
+      document.getElementById('crop1').disabled = !e.target.value;
+      applyCropToImg(1);
+    });
+    document.getElementById('url2').addEventListener('input', e => {
+      const img = document.getElementById('img2');
+      img.src = e.target.value || '';
+      img.style.display = e.target.value ? 'block' : 'none';
+      document.getElementById('crop2').disabled = !e.target.value;
+      applyCropToImg(2);
+    });
+
+    function applyCropToImg(n) {
+      const img = document.getElementById('img' + n);
+      const c = cropData[n];
+      const iw = img.naturalWidth || img.width || 1;
+      const ih = img.naturalHeight || img.height || 1;
+      const side = Math.min(iw, ih);
+      const sx = c.x * Math.max(0, iw - side);
+      const sy = c.y * Math.max(0, ih - side);
+      const cx = ((sx + side/2) / iw) * 100;
+      const cy = ((sy + side/2) / ih) * 100;
+      img.style.objectPosition = cx + '% ' + cy + '%';
+    }
+
+    function openCrop(n) {
+      const src = document.getElementById('url' + n).value || document.getElementById('img' + n).src;
+      if (!src) return;
+      currentCropProfile = n;
+      document.getElementById('cropProfilNum').textContent = n;
+      const img = document.getElementById('cropImg');
+      img.src = src;
+      img.onload = () => {
+        document.getElementById('cropModal').classList.add('show');
+        initCropBox(n);
+      };
+    }
+
+    function initCropBox(n) {
+      const area = document.getElementById('cropArea');
+      const img = document.getElementById('cropImg');
+      const box = document.getElementById('cropBox');
+      const iw = img.naturalWidth || img.width, ih = img.naturalHeight || img.height;
+      const dw = img.offsetWidth, dh = img.offsetHeight;
+      const side = Math.min(dw, dh);
+      const c = cropData[n];
+      box.style.width = side + 'px';
+      box.style.height = side + 'px';
+      box.style.left = (c.x * (dw - side)) + 'px';
+      box.style.top = (c.y * (dh - side)) + 'px';
+      let dragging = false, startX, startY, startLeft, startTop;
+      box.onmousedown = e => {
+        e.preventDefault();
+        dragging = true;
+        startX = e.clientX;
+        startY = e.clientY;
+        startLeft = parseInt(box.style.left) || 0;
+        startTop = parseInt(box.style.top) || 0;
+      };
+      document.onmousemove = e => {
+        if (!dragging) return;
+        let left = startLeft + e.clientX - startX;
+        let top = startTop + e.clientY - startY;
+        left = Math.max(0, Math.min(dw - side, left));
+        top = Math.max(0, Math.min(dh - side, top));
+        box.style.left = left + 'px';
+        box.style.top = top + 'px';
+      };
+      document.onmouseup = () => {
+        dragging = false;
+        document.onmousemove = null;
+        document.onmouseup = null;
+      };
+    }
+
+    function applyCrop() {
+      const box = document.getElementById('cropBox');
+      const img = document.getElementById('cropImg');
+      const dw = img.offsetWidth, dh = img.offsetHeight;
+      const side = Math.min(dw, dh);
+      const left = parseInt(box.style.left) || 0;
+      const top = parseInt(box.style.top) || 0;
+      cropData[currentCropProfile] = {
+        x: (dw - side) > 0 ? left / (dw - side) : 0.5,
+        y: (dh - side) > 0 ? top / (dh - side) : 0.5
+      };
+      applyCropToImg(currentCropProfile);
+      closeCrop();
+    }
+
+    function closeCrop() {
+      document.getElementById('cropModal').classList.remove('show');
+    }
+
+    function drawCover(ctx, img, dx, dy, dw, dh, crop) {
+      const iw = img.width, ih = img.height;
+      const side = Math.min(iw, ih);
+      const c = crop || { x: 0.5, y: 0.5 };
+      const maxX = Math.max(0, iw - side);
+      const maxY = Math.max(0, ih - side);
+      const sx = c.x * maxX;
+      const sy = c.y * maxY;
+      ctx.drawImage(img, sx, sy, side, side, dx, dy, dw, dh);
+    }
+    function loadImg(src) {
+      return new Promise(r => {
+        if (!src || src === '') { r(null); return; }
+        const i = new Image();
+        if (src.startsWith('http')) i.crossOrigin = 'anonymous';
+        i.onload = () => r(i);
+        i.onerror = () => r(null);
+        i.src = src;
+      });
+    }
+
+  </script>
+  <script>
+    async function generateImage() {
+        const w = 580, h = 420;
+        const c = document.createElement('canvas');
+        c.width = w; c.height = h;
+        const ctx = c.getContext('2d');
+
+        function roundRect(x,y,w,h,r){
+          ctx.beginPath();
+          ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y);
+          ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+          ctx.lineTo(x+w,y+h-r); ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+          ctx.lineTo(x+r,y+h); ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+          ctx.lineTo(x,y+r); ctx.quadraticCurveTo(x,y,x+r,y);
+          ctx.closePath();
+        }
+
+        ctx.fillStyle = '#000';
+        ctx.fillRect(0, 0, w, h);
+
+        ctx.fillStyle = '#0a0a0a';
+        ctx.strokeStyle = '#ec4899';
+        ctx.lineWidth = 3;
+        roundRect(20, 20, 540, 380, 24);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.font = 'bold 32px system-ui';
+        ctx.textAlign = 'left';
+        const t1 = 'VOTE TO ', t2 = 'FAME';
+        const startX = w/2 - ctx.measureText(t1+t2).width/2;
+        ctx.fillStyle = '#fff';
+        ctx.fillText(t1, startX, 72);
+        ctx.fillStyle = '#ec4899';
+        ctx.fillText(t2, startX + ctx.measureText(t1).width, 72);
+
+        const slotSize = 200;
+        const gap = 12;
+        const totalW = slotSize * 2 + 48 + gap * 2;
+        const leftX = (w - totalW) / 2 + 24;
+        const slotY = 110;
+
+        ctx.fillStyle = '#000';
+        ctx.strokeStyle = '#ec4899';
+        ctx.lineWidth = 4;
+        roundRect(leftX, slotY, slotSize, slotSize, 16);
+        ctx.fill();
+        ctx.stroke();
+        const av1 = await loadImg(document.getElementById('url1').value || document.getElementById('img1').src);
+        if (av1 && av1.width) {
+          ctx.save();
+          roundRect(leftX, slotY, slotSize, slotSize, 16);
+          ctx.clip();
+          drawCover(ctx, av1, leftX, slotY, slotSize, slotSize, cropData[1]);
+          ctx.restore();
+        }
+        ctx.fillStyle = '#ec4899';
+        ctx.shadowColor = 'rgba(0,0,0,0.5)';
+        ctx.shadowBlur = 4;
+        ctx.beginPath();
+        ctx.arc(leftX - 6, slotY - 6, 18, 0, Math.PI*2);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = '#000';
+        ctx.font = 'bold 17px system-ui';
+        ctx.textAlign = 'center';
+        ctx.fillText('1', leftX - 6, slotY + 1);
+
+        const rightX = leftX + slotSize + gap + 48 + gap;
+        roundRect(rightX, slotY, slotSize, slotSize, 16);
+        ctx.fillStyle = '#000';
+        ctx.fill();
+        ctx.strokeStyle = '#ec4899';
+        ctx.stroke();
+        const av2 = await loadImg(document.getElementById('url2').value || document.getElementById('img2').src);
+        if (av2 && av2.width) {
+          ctx.save();
+          roundRect(rightX, slotY, slotSize, slotSize, 16);
+          ctx.clip();
+          drawCover(ctx, av2, rightX, slotY, slotSize, slotSize, cropData[2]);
+          ctx.restore();
+        }
+        ctx.fillStyle = '#ec4899';
+        ctx.shadowColor = 'rgba(0,0,0,0.5)';
+        ctx.shadowBlur = 4;
+        ctx.beginPath();
+        ctx.arc(rightX - 6, slotY - 6, 18, 0, Math.PI*2);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = '#000';
+        ctx.font = 'bold 17px system-ui';
+        ctx.textAlign = 'center';
+        ctx.fillText('2', rightX - 6, slotY + 1);
+
+        const iconX = leftX + slotSize + gap + 24;
+        const iconY = slotY + slotSize/2;
+        ctx.fillStyle = '#ec4899';
+        ctx.beginPath();
+        ctx.arc(iconX, iconY, 20, 0, Math.PI*2);
+        ctx.fill();
+        ctx.fillStyle = '#fff';
+        ctx.font = 'bold 16px system-ui';
+        ctx.fillText('♥', iconX, iconY + 6);
+
+        ctx.fillStyle = '#6b7280';
+        ctx.font = '14px system-ui';
+        ctx.textAlign = 'center';
+        ctx.fillText('.gg/sayuri', w/2, 365);
+
+        return c.toDataURL('image/png');
+    }
+
+    function closeModal() {
+      document.getElementById('modal').classList.remove('show');
+    }
+
+    async function previewImage() {
+      const btn = document.querySelector('.btn-preview');
+      btn.disabled = true;
+      btn.textContent = 'Génération...';
+      try {
+        const dataUrl = await generateImage();
+        document.getElementById('previewImg').src = dataUrl;
+        document.getElementById('modal').classList.add('show');
+      } catch (e) { alert('Erreur: ' + e.message); }
+      btn.disabled = false;
+      btn.textContent = "👁 Regarder l'image";
+    }
+
+    async function downloadImage() {
+      const btn = document.querySelector('.btn-dl');
+      btn.disabled = true;
+      btn.textContent = 'Génération...';
+      try {
+        const dataUrl = await generateImage();
+        const a = document.createElement('a');
+        a.href = dataUrl;
+        a.download = 'vote-to-fame-' + Date.now() + '.png';
+        a.click();
+      } catch (e) { alert('Erreur: ' + e.message); }
+      btn.disabled = false;
+      btn.textContent = '⬇ Télécharger';
+    }
+  </script>
+</body>
+</html>
