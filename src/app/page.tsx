@@ -64,9 +64,9 @@ function BuyButton({
     <button
       onClick={handleBuy}
       disabled={loading}
-      className="w-full py-3 rounded-xl font-bold bg-gradient-to-r from-pink-500 to-rose-500 text-white hover:from-pink-600 hover:to-rose-600 transition shadow-lg shadow-pink-500/25 disabled:opacity-70"
+      className="py-2 px-4 rounded-lg bg-white/15 text-white text-sm font-medium hover:bg-white/25 transition border border-white/10 disabled:opacity-70 shrink-0"
     >
-      {loading ? '...' : 'Buy — ' + price}
+      {loading ? '...' : 'Buy'}
     </button>
   )
 }
@@ -118,22 +118,29 @@ export default function Home() {
   }
 
   return (
-    <main className="min-h-screen bg-[#09090b] text-white">
+    <main className="min-h-screen text-white relative">
+      {/* Fond flou */}
+      <div
+        className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: 'url(/images/bg.png)', filter: 'blur(40px)', transform: 'scale(1.1)' }}
+      />
+      <div className="fixed inset-0 z-0 bg-black/60" />
+
+      <div className="relative z-10">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-[#09090b]/90 backdrop-blur-md border-b border-white/5">
-        <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
-          <span className="font-display text-xl font-bold">Sayuri Shop</span>
-          <div className="flex items-center gap-3">
+      <header className="sticky top-0 z-50 bg-white/5 backdrop-blur-xl border-b border-white/10">
+        <div className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
+          <span className="font-display text-lg font-semibold text-white">Sayuri Shop</span>
+          <div className="flex items-center gap-2">
             {discordId ? (
-              <span className="text-zinc-400 text-sm flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" /> Connected
+              <span className="text-zinc-300 text-sm flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" /> Connected
               </span>
             ) : (
               <a
                 href="/api/auth/discord"
-                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#5865F2] text-white text-sm font-medium hover:bg-[#4752C4] transition"
+                className="px-3 py-1.5 rounded-md bg-white/10 text-white text-sm hover:bg-white/20 transition"
               >
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
                 Connect
               </a>
             )}
@@ -141,54 +148,35 @@ export default function Home() {
               href={DISCORD_LINK}
               target="_blank"
               rel="noopener noreferrer"
-              className="px-4 py-2 rounded-lg bg-gradient-to-r from-pink-500 to-rose-500 text-white text-sm font-bold hover:from-pink-600 hover:to-rose-600 transition"
+              className="px-4 py-2 rounded-md bg-white/15 text-white text-sm font-medium hover:bg-white/25 transition border border-white/10"
             >
-              Join Discord
+              Discord
             </a>
           </div>
         </div>
       </header>
 
-      {/* Hero — style flash shop */}
-      <section className="relative border-b border-white/5">
-        <div className="absolute inset-0 bg-gradient-to-b from-pink-500/10 to-transparent pointer-events-none" />
-        <div className="relative max-w-6xl mx-auto px-4 py-12 sm:py-16 text-center">
-          <h1 className="font-display text-4xl sm:text-5xl font-bold tracking-tight mb-3">
-            <span className="text-white">Sayuri</span>{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-rose-500">Shop</span>
-          </h1>
-          <p className="text-zinc-400 text-lg max-w-xl mx-auto mb-8">
-            Premium digital products. Instant delivery, 24/7 support.
-          </p>
-          <a
-            href={DISCORD_LINK}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-pink-500 to-rose-500 text-white font-bold text-lg hover:from-pink-600 hover:to-rose-600 transition shadow-xl shadow-pink-500/25"
-          >
-            Open in Discord
-          </a>
-        </div>
-      </section>
-
-      {/* Banner image */}
-      <section className="max-w-6xl mx-auto px-4 py-8">
-        <div className="rounded-2xl overflow-hidden border border-white/10 aspect-[3/1] max-h-52">
-          <img src="/images/banner.png" alt="Sayuri Shop" className="w-full h-full object-cover" />
-        </div>
+      {/* Hero épuré */}
+      <section className="max-w-5xl mx-auto px-4 pt-16 pb-12 text-center">
+        <h1 className="font-display text-3xl sm:text-4xl font-semibold text-white tracking-tight mb-2">
+          Sayuri Shop
+        </h1>
+        <p className="text-zinc-400 text-sm max-w-md mx-auto">
+          Digital products. Instant delivery.
+        </p>
       </section>
 
       {/* Products */}
-      <section className="max-w-6xl mx-auto px-4 pb-20">
-        <div className="flex flex-wrap gap-2 mb-8">
+      <section className="max-w-5xl mx-auto px-4 pb-20">
+        <div className="flex flex-wrap gap-1.5 mb-8 justify-center">
           {CATEGORIES.map((cat) => (
             <button
               key={cat}
               onClick={() => setActiveTab(cat)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
+              className={`px-3 py-1.5 rounded-md text-sm transition ${
                 activeTab === cat
-                  ? 'bg-pink-500 text-white'
-                  : 'bg-zinc-800/80 text-zinc-400 hover:text-white hover:bg-zinc-700'
+                  ? 'bg-white/20 text-white'
+                  : 'text-zinc-400 hover:text-white hover:bg-white/10'
               }`}
             >
               {cat}
@@ -196,18 +184,18 @@ export default function Home() {
           ))}
         </div>
 
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((product) => (
             <article
               key={product.id}
-              className="relative rounded-2xl border border-white/10 bg-zinc-900/50 overflow-hidden hover:border-pink-500/30 transition"
+              className="relative rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 overflow-hidden hover:bg-white/10 hover:border-white/20 transition"
             >
               {product.badge && (
-                <div className="absolute top-3 right-3 z-10 px-2 py-0.5 rounded-md bg-pink-500 text-white text-xs font-bold">
+                <div className="absolute top-2.5 right-2.5 z-10 px-2 py-0.5 rounded bg-white/20 text-white text-xs">
                   {product.badge}
                 </div>
               )}
-              <div className="relative aspect-square bg-zinc-900 flex items-center justify-center p-6">
+              <div className="relative aspect-square flex items-center justify-center p-6 bg-white/[0.02]">
                 <img
                   src={product.image}
                   alt={product.name}
@@ -218,69 +206,58 @@ export default function Home() {
                     if (fb) fb.style.display = 'flex'
                   }}
                 />
-                <div className="absolute inset-0 hidden flex items-center justify-center text-5xl bg-zinc-900">
+                <div className="absolute inset-0 hidden flex items-center justify-center text-4xl text-zinc-500">
                   {product.emoji}
                 </div>
               </div>
-              <div className="p-5">
-                <p className="text-pink-500 text-xs font-semibold uppercase tracking-wider mb-1">{product.tagline}</p>
-                <h3 className="font-display text-lg font-bold text-white mb-2">{product.name}</h3>
-                <p className="text-zinc-400 text-sm mb-4">{product.description}</p>
-                <ul className="flex flex-wrap gap-2 mb-4">
-                  {product.features.map((f, i) => (
-                    <li key={i} className="text-xs text-zinc-500 bg-zinc-800 px-2 py-1 rounded">{f}</li>
-                  ))}
-                </ul>
+              <div className="p-4">
+                <p className="text-zinc-500 text-xs uppercase tracking-wider mb-0.5">{product.tagline}</p>
+                <h3 className="font-display text-base font-semibold text-white mb-1">{product.name}</h3>
+                <p className="text-zinc-400 text-sm mb-3">{product.description}</p>
                 {isVariantProduct(product) && (
                   <select
                     value={selectedVariants[product.id] ?? 0}
                     onChange={(e) => setSelectedVariants((v) => ({ ...v, [product.id]: Number(e.target.value) }))}
-                    className="w-full mb-4 px-3 py-2 rounded-lg bg-zinc-800 border border-zinc-700 text-white text-sm focus:outline-none focus:ring-2 focus:ring-pink-500"
+                    className="w-full mb-3 px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:ring-1 focus:ring-white/20"
                   >
                     {product.variants.map((v, i) => (
                       <option key={i} value={i}>{v.label} — {v.price}</option>
                     ))}
                   </select>
                 )}
-                <BuyButton
-                  productName={product.name}
-                  variant={isVariantProduct(product) ? product.variants[selectedVariants[product.id] ?? 0]?.label : undefined}
-                  price={getProductPrice(product)}
-                  discordId={discordId}
-                />
+                <div className="flex items-center justify-between gap-3">
+                  <span className="text-white font-medium">{getProductPrice(product)}</span>
+                  <BuyButton
+                    productName={product.name}
+                    variant={isVariantProduct(product) ? product.variants[selectedVariants[product.id] ?? 0]?.label : undefined}
+                    price={getProductPrice(product)}
+                    discordId={discordId}
+                  />
+                </div>
               </div>
             </article>
           ))}
         </div>
       </section>
 
-      {/* CTA Discord */}
-      <section className="border-t border-white/5 py-16">
-        <div className="max-w-2xl mx-auto px-4 text-center">
-          <h2 className="font-display text-2xl font-bold text-white mb-2">Order on Discord</h2>
-          <p className="text-zinc-400 mb-6">Join our server to buy. Instant delivery & support.</p>
-          <a
-            href={DISCORD_LINK}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-[#5865F2] text-white font-bold hover:bg-[#4752C4] transition"
-          >
-            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
-            Join Sayuri Shop Discord
-          </a>
-        </div>
+      {/* CTA */}
+      <section className="max-w-5xl mx-auto px-4 py-12 text-center border-t border-white/10">
+        <p className="text-zinc-400 text-sm mb-4">Orders & support on Discord</p>
+        <a
+          href={DISCORD_LINK}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-block px-6 py-2.5 rounded-lg bg-white/15 text-white text-sm font-medium hover:bg-white/25 transition border border-white/10"
+        >
+          Join Discord
+        </a>
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-white/5 py-8">
-        <div className="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <span className="font-display font-bold text-white">Sayuri Shop</span>
-          <a href={DISCORD_LINK} target="_blank" rel="noopener noreferrer" className="text-zinc-500 hover:text-white text-sm">
-            Discord
-          </a>
-        </div>
-        <p className="text-center text-zinc-600 text-xs mt-6">© {new Date().getFullYear()} Sayuri Shop</p>
+      <footer className="py-6 text-center">
+        <p className="text-zinc-500 text-xs">© {new Date().getFullYear()} Sayuri Shop</p>
       </footer>
+      </div>
     </main>
   )
 }
